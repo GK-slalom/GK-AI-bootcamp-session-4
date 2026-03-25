@@ -8,6 +8,7 @@ capabilities and manage consulting expertise across the organization.
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
+import json
 import os
 from pathlib import Path
 
@@ -18,6 +19,79 @@ app = FastAPI(title="Slalom Capabilities Management API",
 current_dir = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=os.path.join(Path(__file__).parent,
           "static")), name="static")
+
+
+def _load_competency_matrix(path: Path) -> dict:
+    """Load and validate competency matrix config from disk."""
+    if not path.exists():
+        raise RuntimeError(
+            f"Invalid competency matrix config: file not found at {path}"
+        )
+
+    try:
+        with path.open("r", encoding="utf-8") as file:
+            data = json.load(file)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(
+            f"Invalid competency matrix config: malformed JSON ({exc.msg})"
+        ) from exc
+
+    if not isinstance(data, dict):
+        raise RuntimeError(
+            "Invalid competency matrix config: root object must be a JSON object"
+        )
+
+    domains = data.get("domains")
+    if not isinstance(domains, list) or not domains:
+        raise RuntimeError(
+            "Invalid competency matrix config: 'domains' must be a non-empty list"
+        )
+
+    for domain in domains:
+        if not isinstance(domain, dict):
+            raise RuntimeError(
+                "Invalid competency matrix config: each domain must be an object"
+            )
+
+        domain_name = domain.get("name")
+        if not isinstance(domain_name, str) or not domain_name.strip():
+            raise RuntimeError(
+                "Invalid competency matrix config: each domain requires a non-empty 'name'"
+            )
+
+        sub_areas = domain.get("sub_areas")
+        if not isinstance(sub_areas, list) or not sub_areas:
+            raise RuntimeError(
+                "Invalid competency matrix config: each domain requires a non-empty 'sub_areas' list"
+            )
+
+        for sub_area in sub_areas:
+            if not isinstance(sub_area, dict):
+                raise RuntimeError(
+                    "Invalid competency matrix config: each sub-area must be an object"
+                )
+
+            sub_area_name = sub_area.get("name")
+            if not isinstance(sub_area_name, str) or not sub_area_name.strip():
+                raise RuntimeError(
+                    "Invalid competency matrix config: each sub-area requires a non-empty 'name'"
+                )
+
+            levels = sub_area.get("levels")
+            if not isinstance(levels, list) or len(levels) != 4:
+                raise RuntimeError(
+                    "Invalid competency matrix config: each sub-area must define exactly 4 levels"
+                )
+
+            if any(not isinstance(level, str) or not level.strip() for level in levels):
+                raise RuntimeError(
+                    "Invalid competency matrix config: all level descriptors must be non-empty strings"
+                )
+
+    return data
+
+
+competency_matrix = _load_competency_matrix(current_dir / "competency_matrix.json")
 
 # In-memory capabilities database
 capabilities = {
@@ -113,6 +187,11 @@ def root():
 @app.get("/capabilities")
 def get_capabilities():
     return capabilities
+
+
+@app.get("/competency-matrix")
+def get_competency_matrix():
+    return competency_matrix
 
 
 @app.post("/capabilities/{capability_name}/register")

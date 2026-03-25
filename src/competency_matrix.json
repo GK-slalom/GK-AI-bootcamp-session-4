@@ -1,0 +1,50 @@
+{
+  "domains": [
+    {
+      "name": "Programming",
+      "sub_areas": [
+        {
+          "name": "Python",
+          "levels": [
+            "Aware: Understands Python basics and can modify existing scripts with guidance.",
+            "Applied: Builds maintainable modules and APIs using Python best practices.",
+            "Advanced: Designs scalable Python services and mentors teammates.",
+            "Expert: Defines engineering standards and leads complex Python architecture decisions."
+          ]
+        },
+        {
+          "name": "JavaScript",
+          "levels": [
+            "Aware: Understands language fundamentals and can make small UI fixes.",
+            "Applied: Builds interactive features with modern JavaScript patterns.",
+            "Advanced: Optimizes performance and drives frontend architecture decisions.",
+            "Expert: Leads cross-team JavaScript platform standards and strategy."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Software Engineering",
+      "sub_areas": [
+        {
+          "name": "System Design",
+          "levels": [
+            "Aware: Understands core design concepts and can contribute to discussions.",
+            "Applied: Designs small services with clear boundaries and data models.",
+            "Advanced: Designs distributed systems with reliability and scalability in mind.",
+            "Expert: Sets architecture direction and resolves ambiguous trade-offs at scale."
+          ]
+        },
+        {
+          "name": "Testing Strategy",
+          "levels": [
+            "Aware: Writes basic unit tests for straightforward logic.",
+            "Applied: Creates effective test suites across unit and integration layers.",
+            "Advanced: Improves quality pipelines with robust automation and risk-based coverage.",
+            "Expert: Defines organization-wide testing strategy and quality governance."
+          ]
+        }
+      ]
+    }
+  ]
+}
