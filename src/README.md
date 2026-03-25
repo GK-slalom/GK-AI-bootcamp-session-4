@@ -37,6 +37,7 @@ A FastAPI application that enables Slalom consultants to register their capabili
 | Method | Endpoint                                                          | Description                                                         |
 | ------ | ----------------------------------------------------------------- | ------------------------------------------------------------------- |
 | GET    | `/capabilities`                                                   | Get all capabilities with details and current consultant assignments |
+| GET    | `/competency-matrix`                                              | Get competency matrix domains, sub-areas, and 4-level rubric data  |
 | POST   | `/capabilities/{capability_name}/register?email=consultant@slalom.com` | Register consultant for a capability                     |
 | DELETE | `/capabilities/{capability_name}/unregister?email=consultant@slalom.com` | Unregister consultant from a capability              |
 
@@ -62,6 +63,8 @@ The application uses a consulting-focused data model:
    - Availability
 
 All data is currently stored in memory for this learning exercise. In a production environment, this would be backed by a robust database system.
+
+The competency matrix structure is externalized in `competency_matrix.json` and validated during application startup.
 
 ## Future Enhancements
 
